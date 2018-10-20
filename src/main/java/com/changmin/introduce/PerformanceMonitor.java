@@ -1,0 +1,22 @@
+package com.changmin.introduce;
+
+import com.changmin.proxy.MethodPerformace;
+
+public class PerformanceMonitor {
+    private static ThreadLocal<MethodPerformace> performaceRecord = new ThreadLocal<MethodPerformace>();
+    public static void begin(String method) {
+        System.out.println("begin monitor...");
+        MethodPerformace mp = performaceRecord.get();//获取performanceRecord中当前线程共享变量的值。
+        if(mp == null){
+            mp = new MethodPerformace(method);
+            performaceRecord.set(mp);
+        }else{
+            mp.reset(method);
+        }
+    }
+    public static void end() {
+        System.out.println("end monitor...");
+        MethodPerformace mp = performaceRecord.get();
+        mp.printPerformace();
+    }
+}

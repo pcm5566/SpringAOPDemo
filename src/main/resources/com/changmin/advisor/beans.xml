@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <bean id="waiterTarget" class="com.changmin.advisor.Waiter"/>
+    <!--
+    <bean id="sellerTarget" class="com.changmin.advisor.Seller"/>
+    -->
+
+    <bean id="greetingAdvice" class="com.changmin.advisor.GreetingBeforeAdvice"/>
+    <!--
+    <bean id="greetingAdvisor" class="com.changmin.advisor.GreetingAdvisor"
+          p:advice-ref="greetingAdvice"/>
+    <bean id="parent" abstract="true" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="greetingAdvisor"
+          p:proxyTargetClass="true"/>
+    <bean id="waiter" parent="parent" p:target-ref="waiterTarget"/>
+    <bean id="seller" parent="parent" p:target-ref="sellerTarget"/>
+    -->
+    <!--
+    <bean id="regexAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+          p:advice-ref="greetingAdvice">
+        <property name="patterns">
+            <list>
+                <value>.*greet.*</value>
+            </list>
+        </property>
+    </bean>
+    -->
+    <!--
+    <bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="pointcut">
+            <bean class="com.changmin.advisor.GreetingDynamicPointcut"/>
+        </property>
+        <property name="advice">
+            <bean class="com.changmin.advisor.GreetingBeforeAdvice"/>
+        </property>
+    </bean>
+    -->
+    <bean id="controlFlowPointcut" class="org.springframework.aop.support.ControlFlowPointcut">
+        <constructor-arg type="java.lang.Class" value="com.changmin.advisor.WaiterDelegate"/>
+        <constructor-arg type="java.lang.String" value="service"/>
+    </bean>
+    <bean id="waiter1" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="dynamicAdvisor"
+          p:target-ref="waiterTarget"
+          p:proxyTargetClass="true"/>
+    <bean id="controlFlowAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+          p:pointcut-ref="controlFlowPointcut"
+          p:advice-ref="greetingAdvice"/>
+    <bean id="waiter3" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="controlFlowAdvisor"
+          p:target-ref="waiterTarget"
+          p:proxyTargetClass="true"/>
+
+
+
+
+
+</beans>
